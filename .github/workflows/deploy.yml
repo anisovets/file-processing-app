@@ -1,0 +1,27 @@
+name: 'Provision AWS Resources'
+
+on: 
+  push: 
+  pull_request:
+  workflow_dispatch:
+jobs:
+  Cloudformation-checker:
+    name: Check linting and security concerns
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials 
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
+          aws-region: us-east-1
+     # Deploy to AWS CloudFormation
+      - name: Deploy to AWS CloudFormation
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: user-management-stack
+          template: cloudformation/resource-management-stack.yaml
+          no-fail-on-empty-changeset: "1" 
