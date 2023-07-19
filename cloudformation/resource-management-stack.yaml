@@ -4,7 +4,7 @@ Resources:
     Type: "AWS::S3::Bucket"
     Properties:
       BucketName: "image-landing-bucket"
-#  MySQSQueue:
-#    Type: "AWS::SQS::Queue"
-#    Properties:
-#      QueueName: "file-processing-queue"
+  MySQSQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: "image-processing-queue"
