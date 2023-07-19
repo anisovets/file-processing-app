@@ -2,9 +2,13 @@ AWSTemplateFormatVersion: "2010-09-09"
 Resources:
   MyS3Bucket:
     Type: "AWS::S3::Bucket"
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Delete
     Properties:
       BucketName: "image-landing-bucket"
   MySQSQueue:
     Type: "AWS::SQS::Queue"
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Delete
     Properties:
       QueueName: "image-processing-queue"
