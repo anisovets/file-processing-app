@@ -21,7 +21,6 @@ Resources:
   MyLambdaExecutionRole:
     Type: AWS::IAM::Role
     UpdateReplacePolicy: Retain
-    DeletionPolicy: Delete
     Properties:
       RoleName: LambdaExecutionRole
       AssumeRolePolicyDocument:
