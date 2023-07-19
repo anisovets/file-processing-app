@@ -4,7 +4,7 @@ Resources:
     Type: "AWS::S3::Bucket"
     Properties:
       BucketName: "landing-bucket"
-  MySQSQueue:
-    Type: "AWS::SQS::Queue"
-    Properties:
-      QueueName: "file-processing-queue"
+#  MySQSQueue:
+#    Type: "AWS::SQS::Queue"
+#    Properties:
+#      QueueName: "file-processing-queue"
