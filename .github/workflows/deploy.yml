@@ -24,6 +24,6 @@ jobs:
       - name: Deploy to AWS CloudFormation
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: user-management-stack
+          name: resource-management-stack
           template: cloudformation/resource-management-stack.yaml
           no-fail-on-empty-changeset: "1" 
