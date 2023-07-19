@@ -62,7 +62,7 @@ Resources:
     Properties:
       Name: file-processing-project
       Artifacts:
-        Type: NO_ARTIFACTS
+        Type: CODEPIPELINE
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
