@@ -53,10 +53,12 @@ Resources:
     Properties:
       FunctionName: my-lambda-function
       Runtime: provided.al2  # Use "provided.al2" for custom runtime with Docker image
+      PackageType: Image
       Code:
         ImageUri: 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
-      Handler: index.handler  # Replace "index.handler" with the appropriate handler for your Lambda function
-      Role: !GetAtt MyLambdaExecutionRole.Arn  # Replace with the appropriate IAM role for your Lambda function
+      Handler: file_upload_handler
+      Role: !GetAtt MyLambdaExecutionRole.Arn
+      Timeout: 60
   MyCodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
