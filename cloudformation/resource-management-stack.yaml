@@ -33,7 +33,6 @@ Resources:
       Policies:
         - PolicyName: LambdaExecutionPolicy
           UpdateReplacePolicy: Retain
-          DeletionPolicy: Delete
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
