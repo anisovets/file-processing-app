@@ -20,6 +20,8 @@ Resources:
       RepositoryName: processing-erc-repo 
   MyLambdaExecutionRole:
     Type: AWS::IAM::Role
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Delete
     Properties:
       RoleName: LambdaExecutionRole
       AssumeRolePolicyDocument:
