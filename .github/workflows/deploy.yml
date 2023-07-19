@@ -26,4 +26,5 @@ jobs:
         with:
           name: resource-management-stack
           template: cloudformation/resource-management-stack.yaml
-          no-fail-on-empty-changeset: "1" 
+          no-fail-on-empty-changeset: "1"
+          capabilities: CAPABILITY_NAMED_IAM
