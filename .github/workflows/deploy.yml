@@ -8,6 +8,8 @@ jobs:
   Cloudformation-checker:
     name: Check linting and security concerns
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_RUNNER_DEBUG: true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
