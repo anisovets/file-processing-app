@@ -17,4 +17,71 @@ Resources:
     UpdateReplacePolicy: Retain
     DeletionPolicy: Delete
     Properties:
-      RepositoryName: processing-erc-repo
+      RepositoryName: processing-erc-repo 
+  MyLambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaExecutionPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+              - Effect: Allow
+                Action:
+                  - ec2:CreateNetworkInterface
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:DeleteNetworkInterface
+                Resource: "*"
+  MyLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: my-lambda-function
+      Runtime: provided.al2  # Use "provided.al2" for custom runtime with Docker image
+      Code:
+        ImageUri: 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
+      Handler: index.handler  # Replace "index.handler" with the appropriate handler for your Lambda function
+      Role: !GetAtt MyLambdaExecutionRole.Arn  # Replace with the appropriate IAM role for your Lambda function
+  MyCodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: file-processing-project
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:4.0
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: |
+          version: 0.2
+          phases:
+            pre_build:
+              commands:
+                - echo Logging in to Amazon ECR...
+                - $(aws ecr get-login --no-include-email --region your-aws-region)
+            build:
+              commands:
+                - echo Build started on `date`
+                - docker build -t my-lambda-function .
+                - docker tag my-lambda-function:latest 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
+            post_build:
+              commands:
+                - echo Build completed on `date`
+                - echo Pushing the Docker image...
+                - docker push 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
+      ServiceRole: !GetAtt MyLambdaExecutionRole.Arn
