@@ -67,6 +67,7 @@ Resources:
                   - ec2:CreateNetworkInterface
                   - ec2:DescribeNetworkInterfaces
                   - ec2:DeleteNetworkInterface
+                  - ecr:DescribeImages
                 Resource: "*"
   MyLambdaFunction:
     Type: AWS::Lambda::Function
