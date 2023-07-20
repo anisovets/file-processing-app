@@ -50,16 +50,20 @@ Resources:
                 Resource: "*"
               - Effect: Allow
                 Action:
-                  - ec2:CreateNetworkInterface
-                  - ec2:DescribeNetworkInterfaces
-                  - ec2:DeleteNetworkInterface
                   - ecr:GetAuthorizationToken
                   - ecr:BatchCheckLayerAvailability
                   - ecr:GetDownloadUrlForLayer
                   - ecr:GetRepositoryPolicy
                   - ecr:DescribeRepositories
                   - ecr:ListImages
+                  - ecr:DescribeImages
                   - ecr:BatchGetImage
+                  - ecr:InitiateLayerUpload
+                  - ecr:UploadLayerPart
+                  - ecr:CompleteLayerUpload
+                  - ecr:PutImage
+                  - ecr:CreateRepository
+                  - ecr:DeleteRepository
                 Resource: "*"
   MyLambdaFunction:
     Type: AWS::Lambda::Function
