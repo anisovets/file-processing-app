@@ -30,7 +30,7 @@ Resources:
             build:
               commands:
                 - echo Building the Docker image...
-                - docker build -t ${ECRRepositoryName}:latest .
+                - docker build -t ${ECRRepositoryName}:latest -f /Dockerfile/Dockerfile
             post_build:
               commands:
                 - echo Tagging the Docker image...
