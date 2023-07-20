@@ -1,73 +1,23 @@
 AWSTemplateFormatVersion: "2010-09-09" 
+Parametrs:
+  ECRRepositoryName:
+    Type: String
+    Description: "Name for the ECR repository"
+    Default: "processing-erc-repo"
+
 Resources:
   MyECRRepository:
     Type: AWS::ECR::Repository
     UpdateReplacePolicy: Retain
     DeletionPolicy: Delete
     Properties:
-      RepositoryName: processing-erc-repo 
-  MyLambdaExecutionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: LambdaExecutionRole
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: 
-                - lambda.amazonaws.com
-                - codebuild.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: LambdaExecutionPolicy
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: arn:aws:logs:*:*:*
-              - Effect: Allow
-                Action:
-                  - ec2:CreateNetworkInterface
-                  - ec2:DescribeNetworkInterfaces
-                  - ec2:DeleteNetworkInterface
-                Resource: "*"
-              - Effect: Allow
-                Action:
-                  - ecr:GetAuthorizationToken
-                  - ecr:BatchCheckLayerAvailability
-                  - ecr:GetDownloadUrlForLayer
-                  - ecr:GetRepositoryPolicy
-                  - ecr:SetRepositoryPolicy
-                  - ecr:DescribeRepositories
-                  - ecr:ListImages
-                  - ecr:DescribeImages
-                  - ecr:BatchGetImage
-                  - ecr:InitiateLayerUpload
-                  - ecr:UploadLayerPart
-                  - ecr:CompleteLayerUpload
-                  - ecr:PutImage
-                  - ecr:CreateRepository
-                  - ecr:DeleteRepository
-                  - ec2:CreateNetworkInterface
-                  - ec2:DescribeNetworkInterfaces
-                  - ec2:DeleteNetworkInterface
-                  - ecr:DescribeImages
-                Resource: "*"
-  MyCodeBuildProject:
+      RepositoryName: !Ref ECRRepositoryName
+
+  ECRBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: file-processing-project
-      Artifacts:
-        Type: CODEPIPELINE
-      Environment:
-        Type: LINUX_CONTAINER
-        ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/standard:4.0
+      Name: !Sub "${ECRRepositoryName}-build"
+      Description: "CodeBuild project to build and publish Docker image"
       Source:
         Type: CODEPIPELINE
         BuildSpec: |
@@ -76,15 +26,33 @@ Resources:
             pre_build:
               commands:
                 - echo Logging in to Amazon ECR...
-                - $(aws ecr get-login --no-include-email --region your-aws-region)
+                - $(aws ecr get-login --no-include-email --region ${AWS::Region})
             build:
               commands:
-                - echo Build started on `date`
-                - docker build -t my-lambda-function .
-                - docker tag my-lambda-function:latest 
+                - echo Building the Docker image...
+                - docker build -t ${ECRRepositoryName}:latest .
             post_build:
               commands:
-                - echo Build completed on `date`
-                - echo Pushing the Docker image...
-                - docker push 
-      ServiceRole: !GetAtt MyLambdaExecutionRole.Arn
+                - echo Tagging the Docker image...
+                - docker tag ${ECRRepositoryName}:latest ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepositoryName}:latest
+                - echo Publishing the Docker image to Amazon ECR...
+                - docker push ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepositoryName}:latest
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:4.0
+      ServiceRole: !GetAtt ECRBuildProjectRole.Arn
+      
+  ECRBuildProjectRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ECRRepositoryName}-build-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess
