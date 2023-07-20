@@ -1,17 +1,5 @@
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: "2010-09-09" 
 Resources:
-  MyS3Bucket:
-    Type: "AWS::S3::Bucket"
-    UpdateReplacePolicy: Retain
-    DeletionPolicy: Delete
-    Properties:
-      BucketName: "image-landing-bucket"
-  MySQSQueue:
-    Type: "AWS::SQS::Queue"
-    UpdateReplacePolicy: Retain
-    DeletionPolicy: Delete
-    Properties:
-      QueueName: "image-processing-queue"
   MyECRRepository:
     Type: AWS::ECR::Repository
     UpdateReplacePolicy: Retain
@@ -70,13 +58,33 @@ Resources:
                   - ec2:DeleteNetworkInterface
                   - ecr:DescribeImages
                 Resource: "*"
-  MyLambdaFunction:
-    Type: AWS::Lambda::Function
+  MyCodeBuildProject:
+    Type: AWS::CodeBuild::Project
     Properties:
-      FunctionName: my-lambda-function
-      PackageType: Image
-      Code:
-        ImageUri: 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
-      Role: !GetAtt MyLambdaExecutionRole.Arn
-      Timeout: 60
-    DependsOn: MyECRRepository
+      Name: file-processing-project
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:4.0
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: |
+          version: 0.2
+          phases:
+            pre_build:
+              commands:
+                - echo Logging in to Amazon ECR...
+                - $(aws ecr get-login --no-include-email --region your-aws-region)
+            build:
+              commands:
+                - echo Build started on `date`
+                - docker build -t my-lambda-function .
+                - docker tag my-lambda-function:latest 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
+            post_build:
+              commands:
+                - echo Build completed on `date`
+                - echo Pushing the Docker image...
+                - docker push 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
+      ServiceRole: !GetAtt MyLambdaExecutionRole.Arn
