@@ -81,10 +81,10 @@ Resources:
               commands:
                 - echo Build started on `date`
                 - docker build -t my-lambda-function .
-                - docker tag my-lambda-function:latest 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
+                - docker tag my-lambda-function:latest 
             post_build:
               commands:
                 - echo Build completed on `date`
                 - echo Pushing the Docker image...
-                - docker push 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
+                - docker push 
       ServiceRole: !GetAtt MyLambdaExecutionRole.Arn
