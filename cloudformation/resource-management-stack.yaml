@@ -79,6 +79,7 @@ Resources:
         ImageUri: 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
       Role: !GetAtt MyLambdaExecutionRole.Arn
       Timeout: 60
+    DependsOn: MyECRRepository
   MyCodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
