@@ -54,6 +54,7 @@ Resources:
                   - ecr:BatchCheckLayerAvailability
                   - ecr:GetDownloadUrlForLayer
                   - ecr:GetRepositoryPolicy
+                  - ecr:SetRepositoryPolicy
                   - ecr:DescribeRepositories
                   - ecr:ListImages
                   - ecr:DescribeImages
