@@ -1,7 +1,7 @@
 name: 'Provision AWS Resources'
 
 on: 
-  # push: 
+  #push:
   # pull_request:
   workflow_dispatch:
 jobs:
