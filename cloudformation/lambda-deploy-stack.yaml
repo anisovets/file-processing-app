@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09" 
-Parametrs:
+Parameters:
   ECRRepositoryName:
     Type: String
     Description: "Name for the ECR repository"
@@ -42,7 +42,7 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/standard:4.0
       ServiceRole: !GetAtt ECRBuildProjectRole.Arn
-      
+
   ECRBuildProjectRole:
     Type: AWS::IAM::Role
     Properties:
