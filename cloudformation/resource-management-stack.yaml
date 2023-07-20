@@ -64,6 +64,9 @@ Resources:
                   - ecr:PutImage
                   - ecr:CreateRepository
                   - ecr:DeleteRepository
+                  - ec2:CreateNetworkInterface
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:DeleteNetworkInterface
                 Resource: "*"
   MyLambdaFunction:
     Type: AWS::Lambda::Function
