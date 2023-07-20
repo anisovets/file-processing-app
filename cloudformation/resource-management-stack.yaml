@@ -55,7 +55,6 @@ Resources:
       PackageType: Image
       Code:
         ImageUri: 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
-      Handler: file_upload_handler
       Role: !GetAtt MyLambdaExecutionRole.Arn
       Timeout: 60
   MyCodeBuildProject:
