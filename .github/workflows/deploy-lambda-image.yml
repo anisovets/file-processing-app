@@ -1,4 +1,4 @@
-name: 'Publish Lambda Decker Imange'
+name: 'Publish Lambda Docker Imange'
 
 on: 
   #push: 

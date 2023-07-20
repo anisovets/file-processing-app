@@ -37,6 +37,9 @@ Resources:
                 - docker tag ${ECRRepositoryName}:latest ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepositoryName}:latest
                 - echo Publishing the Docker image to Amazon ECR...
                 - docker push ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepositoryName}:latest
+      Artifacts:  
+        Type: CODEPIPELINE
+        Name: lambda-image
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
