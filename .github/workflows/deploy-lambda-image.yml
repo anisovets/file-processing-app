@@ -34,7 +34,7 @@ jobs:
 
     # Build Docker imange and publish to ECR 
       - name: Publish Lambda Decker Imange
-        needs: create-ecr-stack
+        uses: create-ecr-stack
         run: |
             - echo Building the Docker image...
             - docker build -t processing-lambda:latest -f /Dockerfile1/Dockerfile .
