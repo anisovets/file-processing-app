@@ -39,4 +39,5 @@ jobs:
             echo Building the Docker image...
             docker build -t processing-lambda:latest -f Dockerfile .
             docker tag processing-lambda:latest 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 955247798604.dkr.ecr.us-east-1.amazonaws.com
             docker push 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo
