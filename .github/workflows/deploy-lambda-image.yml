@@ -38,3 +38,5 @@ jobs:
         run: |
             echo Building the Docker image...
             docker build -t processing-lambda:latest -f Dockerfile .
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin processing-erc-repo
+            docker push processing-erc-repo:latest
