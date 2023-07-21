@@ -46,7 +46,7 @@ Resources:
                   - ecr:GetAuthorizationToken
                 Resource: !Sub "arn:aws:ecr:us-east-1:955247798604:repository/${ECRRepositoryName}:*"
   ECRRepositoryPolicy:
-    Type: AWS::ECR::RepositoryPolicy
+    Type: AWS::ECR::RegistryPolicy
     Properties:
       RepositoryName: !Ref ECRRepositoryName
       PolicyText:
