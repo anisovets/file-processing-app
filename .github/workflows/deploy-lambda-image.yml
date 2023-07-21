@@ -22,6 +22,14 @@ jobs:
           aws-access-key-id: ${{ secrets.ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
           aws-region: us-east-1
+    # Get AWS Account ID 
+      - name: Get AWS Account ID
+          id: get-account-id
+          run: |
+            AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
+            echo "AWS Account ID: $AWS_ACCOUNT_ID"
+            echo "::set-output name=account_id::$AWS_ACCOUNT_ID
+        
      # Deploy to AWS CloudFormation ECR Stack 
       - name: Create ECR Entity
         id: create-ecr-stack
@@ -38,6 +46,6 @@ jobs:
         run: |
             echo Building the Docker image...
             docker build -t processing-lambda:latest -f Dockerfile .
-            docker tag processing-lambda:latest 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 955247798604.dkr.ecr.us-east-1.amazonaws.com
-            docker push 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo
+            docker tag processing-lambda:latest ${{ needs.get-account-id.outputs.account_id }}.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ needs.get-account-id.outputs.account_id }}.dkr.ecr.us-east-1.amazonaws.com
+            docker push ${{ needs.get-account-id.outputs.account_id }}.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo
