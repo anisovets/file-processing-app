@@ -48,15 +48,13 @@ Resources:
   ECRRepositoryPolicy:
     Type: AWS::ECR::RegistryPolicy
     Properties:
-      RepositoryName: !Ref ECRRepositoryName
       PolicyText:
         Version: '2012-10-17'
         Statement:
           - Sid: AllowPullFromECR
             Effect: Allow
             Principal:
-              AWS:
-                - !GetAtt LambdaExecutionRole.Arn
+              AWS: arn:aws:iam::955247798604:root
             Action:
               - ecr:GetDownloadUrlForLayer
               - ecr:BatchCheckLayerAvailability
