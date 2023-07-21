@@ -38,4 +38,5 @@ jobs:
         run: |
             echo Building the Docker image...
             docker build -t processing-lambda:latest -f Dockerfile .
+            docker tag processing-lambda:latest 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
             docker push 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo
