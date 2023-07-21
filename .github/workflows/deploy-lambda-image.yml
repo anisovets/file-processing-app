@@ -42,7 +42,7 @@ jobs:
         run: |
             echo Building the Docker image...
             docker build -t processing-lambda:latest -f Dockerfile .
-            echo "AWS Accout ID using new method = ${{ needs.aws-deploy-credentials.outputs.aws-account-id }}"
+            echo "AWS Accout ID using new method = ${{ needs.Cloudformation-checker.outputs.aws-account-id }}"
             echo "Access key = ${{ needs.aws-deploy-credentials.outputs.aws-access-key-id }}"
             docker tag processing-lambda:latest  ${{ needs.aws-deploy-credentials.outputs.aws-account-id }}.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
             echo Build Tagged.....
