@@ -4,6 +4,10 @@ Parameters:
     Type: String
     Description: "Name for the ECR repository"
     Default: "processing-ecr-repo"
+  RoleName:
+    Type: String
+    Description: Name of the IAM Role
+    Default: ECRPullRole
 
 Resources:
   MyECRRepository:
@@ -41,3 +45,22 @@ Resources:
                   - ecr:BatchGetImage
                   - ecr:GetAuthorizationToken
                 Resource: !Sub "arn:aws:ecr:us-east-1:955247798604:repository/${ECRRepositoryName}:*"
+  ECRRepositoryPolicy:
+    Type: AWS::ECR::RepositoryPolicy
+    Properties:
+      RepositoryName: !Ref ECRRepositoryName
+      PolicyText:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowPullFromECR
+            Effect: Allow
+            Principal:
+              AWS:
+                - !GetAtt LambdaExecutionRole.Arn
+            Action:
+              - ecr:GetDownloadUrlForLayer
+              - ecr:BatchCheckLayerAvailability
+              - ecr:GetAuthorizationToken
+              - ecr:GetManifest
+              - ecr:DescribeImages
+            Resource: '*'
