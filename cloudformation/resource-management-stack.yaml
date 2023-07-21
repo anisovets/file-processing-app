@@ -12,12 +12,6 @@ Resources:
     DeletionPolicy: Delete
     Properties:
       QueueName: "image-processing-queue"
-  MyECRRepository:
-    Type: AWS::ECR::Repository
-    UpdateReplacePolicy: Retain
-    DeletionPolicy: Delete
-    Properties:
-      RepositoryName: processing-erc-repo 
   MyLambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
