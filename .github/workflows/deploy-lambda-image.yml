@@ -23,7 +23,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
-          aws-account-id: ${{ secrets.AWS_ACCOUNT_ID}}
+          aws-account-id: 955247798604
           aws-region: us-east-1
 
      # Deploy to AWS CloudFormation ECR Stack 
