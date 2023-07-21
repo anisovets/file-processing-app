@@ -12,3 +12,18 @@ Resources:
     DeletionPolicy: Delete
     Properties:
       RepositoryName: !Ref ECRRepositoryName
+MyECRRepositoryPolicy:
+    Type: AWS::ECR::RepositoryPolicy
+    Properties:
+      RepositoryName: !Ref MyECRRepository
+      PolicyText:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: ecr:GetDownloadUrlForLayer
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: ecr:BatchGetImage
