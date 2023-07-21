@@ -38,3 +38,7 @@ jobs:
         run: |
             - echo Building the Docker image...
             - docker build -t processing-lambda:latest -f /Dockerfile1/Dockerfile .
+            - echo Logging in to Amazon ECR...
+            - aws ecr get-login-password --region YOUR_REGION | docker login --username AWS --password-stdin YOUR_ECR_REPOSITORY
+            - docker push YOUR_ECR_REPOSITORY:latest
+  
