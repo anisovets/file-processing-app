@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ACTIONS_RUNNER_DEBUG: true
+      ECR-REPO-NAME: "processing-erc-repo"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -27,6 +28,7 @@ jobs:
         id: get-account-id
         run: |
             AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
+            echo "AWS CLI Output: $(aws sts get-caller-identity)"
             echo "AWS Account ID: $AWS_ACCOUNT_ID"
             echo "::set-output name=account_id::$AWS_ACCOUNT_ID"
         
