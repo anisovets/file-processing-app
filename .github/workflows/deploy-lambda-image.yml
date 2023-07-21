@@ -49,7 +49,7 @@ jobs:
         run: |
             echo Building the Docker image...
             docker build -t processing-lambda:latest -f Dockerfile .
-            echo ${{ needs.aws-deploy-credentials.outputs.aws-account-id }}
+            echo "AWS Accout ID using new method = ${{ needs.aws-deploy-credentials.outputs.aws-account-id }}"
             docker tag processing-lambda:latest  ${{ needs.aws-deploy-credentials.outputs.aws-account-id }}.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
             echo Build Tagged.....
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ needs.get-account-id.outputs.account_id }}.dkr.ecr.us-east-1.amazonaws.com
