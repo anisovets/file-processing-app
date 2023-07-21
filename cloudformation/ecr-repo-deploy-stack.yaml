@@ -16,7 +16,7 @@ Resources:
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub "Lambda-ECR-Execution-Role-${RepositoryName}"
+      RoleName: !Sub "Lambda-ECR-Execution-Role-${ECRRepositoryName}"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -34,10 +34,10 @@ Resources:
                   - ecr:GetDownloadUrlForLayer
                   - ecr:BatchGetImage
                   - ecr:GetAuthorizationToken
-                Resource: !Sub "arn:aws:ecr:us-east-1:955247798604:repository/${RepositoryName}"
+                Resource: !Sub "arn:aws:ecr:us-east-1:955247798604:repository/${ECRRepositoryName}"
               - Effect: Allow
                 Action:
                   - ecr:GetDownloadUrlForLayer
                   - ecr:BatchGetImage
                   - ecr:GetAuthorizationToken
-                Resource: !Sub "arn:aws:ecr:us-east-1:955247798604:repository/${RepositoryName}:*"
+                Resource: !Sub "arn:aws:ecr:us-east-1:955247798604:repository/${ECRRepositoryName}:*"
