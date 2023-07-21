@@ -24,8 +24,8 @@ jobs:
           aws-region: us-east-1
     # Get AWS Account ID 
       - name: Get AWS Account ID
-          id: get-account-id
-          run: |
+        id: get-account-id
+        run: |
             AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
             echo "AWS Account ID: $AWS_ACCOUNT_ID"
             echo "::set-output name=account_id::$AWS_ACCOUNT_ID
