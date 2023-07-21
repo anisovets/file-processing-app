@@ -6,55 +6,38 @@ Parameters:
     Default: "processing-ecr-repo"
 
 Resources:
-  MyLambdaExecutionRole:
-      Type: AWS::IAM::Role
-      Properties:
-        RoleName: LambdaExecutionRole
-        AssumeRolePolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service: 
-                  - lambda.amazonaws.com
-              Action: sts:AssumeRole
-        Policies:
-          - PolicyName: LambdaExecutionPolicy
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource: arn:aws:logs:*:*:*
-                - Effect: Allow
-                  Action:
-                    - ecr:GetAuthorizationToken
-                    - ecr:BatchCheckLayerAvailability
-                    - ecr:GetDownloadUrlForLayer
-                    - ecr:GetRepositoryPolicy
-                    - ecr:SetRepositoryPolicy
-                    - ecr:DescribeRepositories
-                    - ecr:ListImages
-                    - ecr:DescribeImages
-                    - ecr:BatchGetImage
-                    - ecr:InitiateLayerUpload
-                    - ecr:UploadLayerPart
-                    - ecr:CompleteLayerUpload
-                    - ecr:PutImage
-                    - ecr:CreateRepository
-                    - ecr:DeleteRepository
-                    - ec2:CreateNetworkInterface
-                    - ec2:DescribeNetworkInterfaces
-                    - ec2:DeleteNetworkInterface
-                    - ecr:DescribeImages
-                  Resource: "*"
   MyECRRepository:
     Type: AWS::ECR::Repository
     UpdateReplacePolicy: Retain
     DeletionPolicy: Delete
     Properties:
       RepositoryName: !Ref ECRRepositoryName
-      Role: !GetAtt MyLambdaExecutionRole.Arn
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "Lambda-ECR-Execution-Role-${RepositoryName}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: ECRRepositoryAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ecr:GetDownloadUrlForLayer
+                  - ecr:BatchGetImage
+                  - ecr:GetAuthorizationToken
+                Resource: !Sub "arn:aws:ecr:us-east-1:955247798604:repository/${RepositoryName}"
+              - Effect: Allow
+                Action:
+                  - ecr:GetDownloadUrlForLayer
+                  - ecr:BatchGetImage
+                  - ecr:GetAuthorizationToken
+                Resource: !Sub "arn:aws:ecr:us-east-1:955247798604:repository/${RepositoryName}:*"
