@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: "2010-09-09" 
+Parameters:
+  ECRRepositoryName:
+    Type: String
+    Description: "Name for the ECR repository"
+    Default: "processing-erc-repo"
+
+Resources:
+  MyECRRepository:
+    Type: AWS::ECR::Repository
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Delete
+    Properties:
+      RepositoryName: !Ref ECRRepositoryName
