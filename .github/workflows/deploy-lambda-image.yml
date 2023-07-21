@@ -32,6 +32,8 @@ jobs:
             echo "AWS CLI Output: $(aws sts get-caller-identity)"
             echo "AWS Account ID: $AWS_ACCOUNT_ID"
             echo "::set-output name=account_id::$AWS_ACCOUNT_ID"
+            echo "Final initialization - account_id"
+
         
      # Deploy to AWS CloudFormation ECR Stack 
       - name: Create ECR Entity
