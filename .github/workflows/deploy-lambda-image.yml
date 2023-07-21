@@ -36,7 +36,7 @@ jobs:
           capabilities: CAPABILITY_NAMED_IAM
 
     # Build Docker imange and publish to ECR 
-      - name: Publish Lambda Decker Image
+      - name: Publish Lambda Docker Image
         if: success()
         run: |
             echo Building the Docker image...
