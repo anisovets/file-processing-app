@@ -14,8 +14,6 @@ Resources:
     Type: AWS::ECR::Repository
     UpdateReplacePolicy: Retain
     DeletionPolicy: Delete
-    Properties:
-      RepositoryName: !Ref ECRRepositoryName
 
   LambdaExecutionRole:
     Type: AWS::IAM::Role
