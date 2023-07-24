@@ -4,59 +4,36 @@ Parameters:
     Type: String
     Description: "Name for the ECR repository"
     Default: "processing-ecr-repo"
-  RoleName:
-    Type: String
-    Description: Name of the IAM Role
-    Default: ECRPullRole
+
 
 Resources:
   MyECRRepository:
     Type: AWS::ECR::Repository
     UpdateReplacePolicy: Retain
     DeletionPolicy: Delete
+    Properties:
+      RepositoryName: !Ref ECRRepositoryName
+      RepositoryPolicyText:
+        Version: 2012-10-17
+        Statement: [
+          {
+              "Sid": "AllowPushPull",
+              "Effect": "Allow",
+              "Principal": {
+                  "AWS": [
+                      "arn:aws:iam::955247798604:user/app-dev",
+                  ]
+              },
+              "Action": [
+                  "ecr:BatchGetImage",
+                  "ecr:BatchCheckLayerAvailability",
+                  "ecr:CompleteLayerUpload",
+                  "ecr:GetDownloadUrlForLayer",
+                  "ecr:InitiateLayerUpload",
+                  "ecr:PutImage",
+                  "ecr:UploadLayerPart"
+              ]
+          }
+        ]
 
-  LambdaExecutionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Sub "Lambda-ECR-Execution-Role-${ECRRepositoryName}"
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: ECRRepositoryAccess
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - ecr:GetDownloadUrlForLayer
-                  - ecr:BatchGetImage
-                  - ecr:GetAuthorizationToken
-                Resource: !Sub "arn:aws:ecr:us-east-1:955247798604:repository/${ECRRepositoryName}"
-              - Effect: Allow
-                Action:
-                  - ecr:GetDownloadUrlForLayer
-                  - ecr:BatchGetImage
-                  - ecr:GetAuthorizationToken
-                Resource: !Sub "arn:aws:ecr:us-east-1:955247798604:repository/${ECRRepositoryName}:*"
-  ECRRepositoryPolicy:
-    Type: AWS::ECR::RegistryPolicy
-    Properties:
-      PolicyText:
-        Version: '2012-10-17'
-        Statement:
-          - Sid: AllowPullFromECR
-            Effect: Allow
-            Principal:
-              AWS: arn:aws:iam::955247798604:root
-            Action:
-              - ecr:GetDownloadUrlForLayer
-              - ecr:BatchCheckLayerAvailability
-              - ecr:GetAuthorizationToken
-              - ecr:GetManifest
-              - ecr:DescribeImages
-            Resource: '*'
+  
