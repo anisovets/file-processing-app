@@ -1,8 +1,8 @@
 # Use the official AWS Lambda base image for Python
 FROM public.ecr.aws/lambda/python:latest
+MAINTAINER Yaru Anisovec
 
 # Copy your Python code to the /var/task directory in the container
-#COPY ./src/file_processing_lambda.py /app/
 COPY ./src/file_processing_lambda.py /src/file_processing_lambda.py
 COPY ./src/requirements.txt /src/requirements.txt
 
