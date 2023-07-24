@@ -4,7 +4,7 @@ on:
   push: 
     branches:
       - rework
-  #pull_request:
+  pull_request:
   workflow_dispatch:
 jobs:
   Cloudformation-checker:
