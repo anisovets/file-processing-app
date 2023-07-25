@@ -3,10 +3,10 @@ FROM public.ecr.aws/lambda/python:latest
 MAINTAINER Yaru Anisovec
 
 # Copy your Python code to the /var/task directory in the container
-COPY ./src/file_processing_lambda.py /src/file_processing_lambda.py
-COPY ./src/requirements.txt /src/requirements.txt
+COPY ./src/file_processing_lambda.py /var/task/file_processing_lambda.py
+COPY ./src/requirements.txt //var/task/requirements.txt
 
-WORKDIR /src
+WORKDIR /var/task
 
 
 RUN python3 -m pip install -r requirements.txt
