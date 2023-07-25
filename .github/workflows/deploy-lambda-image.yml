@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Load constants
         run: |
-          echo '${{ secrets.MY_CONSTANTS_JSON }}' > /constants.json
+          echo '${{ secrets.MY_CONSTANTS_JSON }}' > ../constants.json
 
       - name: Checkout
         uses: actions/checkout@v2
