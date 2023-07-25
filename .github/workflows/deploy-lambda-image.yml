@@ -12,18 +12,21 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ACTIONS_RUNNER_DEBUG: true
-      ECR-REPO-NAME: "processing-erc-repo"
     steps:
+      - name: Load constants
+        run: |
+          echo '${{ secrets.MY_CONSTANTS_JSON }}' > file-processing-app/constants.json
+
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Configure AWS Credentials 
+      - name: Configure AWS Credentials and Constants 
         id: aws-deploy-credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
-          aws-region: us-east-1
+          aws-region: $(cat file-processing-app/constants.json | jq -r '.REGION')
 
      # Deploy to AWS CloudFormation ECR Stack 
       - name: Create ECR Entity
