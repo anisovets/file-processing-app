@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Load constants
         run: |
-          echo '${{ secrets.MY_CONSTANTS_JSON }}' > file-processing-app/constants.json
+          echo '${{ secrets.MY_CONSTANTS_JSON }}' > /constants.json
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -26,7 +26,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
-          aws-region: $(cat file-processing-app/constants.json | jq -r '.REGION')
+          aws-region: $(cat /constants.json | jq -r '.REGION')
 
      # Deploy to AWS CloudFormation ECR Stack 
       - name: Create ECR Entity
