@@ -25,8 +25,9 @@ jobs:
           aws_region=$(jq -r '.REGION' constants.json)
           echo "The AWS region is: $aws_region"
           # Set the 'aws-region' variable for subsequent steps
-          echo "::set-env name=aws-region::$aws_region"
-          
+          # echo "::set-env name=aws-region::$aws_region"
+          echo "aws-region=$aws_region" >> "$GITHUB_OUTPUT"
+
       - name: Configure AWS Credentials and Constants 
         id: aws-deploy-credentials
         uses: aws-actions/configure-aws-credentials@v1
