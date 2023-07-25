@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: "2010-09-09" 
+Parameters:
+  ECRRepositoryName:
+    Type: String
+    Description: "Name for the ECR repository"
+    Default: "processing-ecr-repo"
+
+
+Resources:
+  MyECRRepository:
+    Type: AWS::ECR::Repository
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Delete
+    Properties:
+      RepositoryName: !Ref ECRRepositoryName
+      RepositoryPolicyText:
+        Version: 2012-10-17
+        Statement: [
+          {
+              "Sid": "AllowPushPull",
+              "Effect": "Allow",
+              "Principal": {
+                  "AWS": [
+                      "arn:aws:iam::955247798604:user/app-dev",
+                  ]
+              },
+              "Action": [
+                  "ecr:BatchGetImage",
+                  "ecr:BatchCheckLayerAvailability",
+                  "ecr:CompleteLayerUpload",
+                  "ecr:GetDownloadUrlForLayer",
+                  "ecr:InitiateLayerUpload",
+                  "ecr:PutImage",
+                  "ecr:UploadLayerPart"
+              ]
+          }
+        ]
+
+  

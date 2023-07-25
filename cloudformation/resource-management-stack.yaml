@@ -12,12 +12,6 @@ Resources:
     DeletionPolicy: Delete
     Properties:
       QueueName: "image-processing-queue"
-  MyECRRepository:
-    Type: AWS::ECR::Repository
-    UpdateReplacePolicy: Retain
-    DeletionPolicy: Delete
-    Properties:
-      RepositoryName: processing-erc-repo 
   MyLambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -29,7 +23,6 @@ Resources:
             Principal:
               Service: 
                 - lambda.amazonaws.com
-                - codebuild.amazonaws.com
             Action: sts:AssumeRole
       Policies:
         - PolicyName: LambdaExecutionPolicy
@@ -42,12 +35,6 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: arn:aws:logs:*:*:*
-              - Effect: Allow
-                Action:
-                  - ec2:CreateNetworkInterface
-                  - ec2:DescribeNetworkInterfaces
-                  - ec2:DeleteNetworkInterface
-                Resource: "*"
               - Effect: Allow
                 Action:
                   - ecr:GetAuthorizationToken
@@ -76,7 +63,6 @@ Resources:
       FunctionName: my-lambda-function
       PackageType: Image
       Code:
-        ImageUri: 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-erc-repo:latest
+        ImageUri: 955247798604.dkr.ecr.us-east-1.amazonaws.com/processing-ecr-repo:latest
       Role: !GetAtt MyLambdaExecutionRole.Arn
       Timeout: 60
-    DependsOn: MyECRRepository

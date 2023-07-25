@@ -1,8 +1,10 @@
 name: 'Publish Lambda Docker Imange'
 
 on: 
-  #push: 
-  #pull_request:
+  push: 
+    branches:
+      - rework
+  pull_request:
   workflow_dispatch:
 jobs:
   Cloudformation-checker:
@@ -10,21 +12,48 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ACTIONS_RUNNER_DEBUG: true
+      ECR-REPO-NAME: "processing-erc-repo"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Configure AWS Credentials 
+        id: aws-deploy-credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
           aws-region: us-east-1
-     # Deploy to AWS CloudFormation
-      - name: Publish Lambda Decker Imange
+
+     # Deploy to AWS CloudFormation ECR Stack 
+      - name: Create ECR Entity
+        id: create-ecr-stack
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: lambda-deployment-stack
-          template: cloudformation/lambda-deploy-stack.yaml
+          template: cloudformation/ecr-repo-deploy-stack.yaml
+          no-fail-on-empty-changeset: "1"
+          capabilities: CAPABILITY_NAMED_IAM
+
+    # Build Docker imange and publish to ECR 
+      - name: Publish Lambda Docker Image
+        if: success()
+        run: |
+            echo Building the Docker image...
+            docker build -t processing-lambda:latest -f Dockerfile .
+            AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
+            docker tag processing-lambda:latest  $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/processing-ecr-repo:latest
+            echo Build Tagged.....
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin  $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+            docker push  $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/processing-ecr-repo
+      
+    # Deploy to AWS CloudFormation Stack that allocates resources 
+      - name: Allocate AWS Resources
+        id: create-resources-stack
+        if: success()
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: resourcese-allocation-stack
+          template: cloudformation/resource-management-stack.yaml
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_NAMED_IAM
