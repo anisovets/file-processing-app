@@ -19,14 +19,21 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2
-
+      - name: Read constants.json
+        run: |
+          # Read the constants.json file and extract the value of 'REGION'
+          aws_region=$(jq -r '.REGION' constants.json)
+          echo "The AWS region is: $aws_region"
+          # Set the 'aws-region' variable for subsequent steps
+          echo "::set-env name=aws-region::$aws_region"
+          
       - name: Configure AWS Credentials and Constants 
         id: aws-deploy-credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
-          aws-region: $(cat ../constants.json | jq -r '.REGION')
+         # aws-region: $(cat ../constants.json | jq -r '.REGION')
 
      # Deploy to AWS CloudFormation ECR Stack 
       - name: Create ECR Entity
