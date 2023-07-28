@@ -50,12 +50,12 @@ jobs:
         if: success()
         run: |
             echo Building the Docker image...
-            docker build -t processing-lambda:latest -f Dockerfile .
+            docker build -t ${{ steps.get-constants.outputs.docker-container-name }}:latest -f Dockerfile .
             AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-            docker tag processing-lambda:latest  $AWS_ACCOUNT_ID.dkr.ecr.${{ steps.get-constants.outputs.aws-region }}.amazonaws.com/processing-ecr-repo:latest
+            docker tag ${{ steps.get-constants.outputs.docker-container-name }}:latest  $AWS_ACCOUNT_ID.dkr.ecr.${{ steps.get-constants.outputs.aws-region }}.amazonaws.com/${{ steps.get-constants.outputs.erc-repo-name }}:latest
             echo Build Tagged.....
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin  $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
-            docker push  $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/processing-ecr-repo
+            aws ecr get-login-password --region ${{ steps.get-constants.outputs.aws-region }} | docker login --username AWS --password-stdin  $AWS_ACCOUNT_ID.dkr.ecr.${{ steps.get-constants.outputs.aws-region }}.amazonaws.com
+            docker push  $AWS_ACCOUNT_ID.dkr.ecr.${{ steps.get-constants.outputs.aws-region }}.amazonaws.com/${{ steps.get-constants.outputs.erc-repo-name }}
       
     # Deploy to AWS CloudFormation Stack that allocates resources 
       - name: Allocate AWS Resources
