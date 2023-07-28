@@ -52,7 +52,7 @@ jobs:
             echo Building the Docker image...
             docker build -t processing-lambda:latest -f Dockerfile .
             AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-            docker tag processing-lambda:latest  $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/processing-ecr-repo:latest
+            docker tag processing-lambda:latest  $AWS_ACCOUNT_ID.dkr.ecr.${{ steps.get-constants.outputs.aws-region }}.amazonaws.com/processing-ecr-repo:latest
             echo Build Tagged.....
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin  $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
             docker push  $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/processing-ecr-repo
