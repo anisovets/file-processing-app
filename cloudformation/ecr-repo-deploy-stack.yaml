@@ -13,8 +13,6 @@ Parameters:
     Description: "Servive user name"
     Default: "***"
 
-
-
 Resources:
   MyECRRepository:
     Type: AWS::ECR::Repository
