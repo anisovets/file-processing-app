@@ -15,7 +15,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Read constants.json
+      - name: Load constats from constants.json
+        id: get-constants
         run: |
           # Read the constants.json file and extract the value of 'REGION'
           aws_region=$(jq -r '.REGION' constants.json)
@@ -24,13 +25,13 @@ jobs:
           # echo "::set-env name=aws-region::$aws_region"
           echo "aws-region=$aws_region" >> "$GITHUB_OUTPUT"
 
-      - name: Configure AWS Credentials and Constants 
+      - name: Configure AWS Credentials
         id: aws-deploy-credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
-          aws-region: ${{ env.aws-region }}
+          aws-region: ${{ needs.get-constants.outputs.aws-region }}
 
      # Deploy to AWS CloudFormation ECR Stack 
       - name: Create ECR Entity
