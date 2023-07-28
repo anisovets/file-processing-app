@@ -20,6 +20,7 @@ Resources:
     DeletionPolicy: Delete
     Properties:
       RepositoryName: !Ref ECRRepositoryName
+      AWSID: !Ref AWSAccountId
       RepositoryPolicyText:
         Version: 2012-10-17
         Statement: [
@@ -42,5 +43,3 @@ Resources:
               ]
           }
         ]
-
-  
