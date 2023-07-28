@@ -1,5 +1,5 @@
 {
-    "REGION": "us-east-1",
     "ERC-REPO-NAME": "processing-erc-repo",
+    "REGION": "us-east-1",
     "DOCKER-CONTAINER-NAME":"processing-lambda"
 }
