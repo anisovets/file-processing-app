@@ -3,6 +3,12 @@ Parameters:
   ECRRepositoryName:
     Type: String
     Description: "Name for the ECR repository"
+  AWSAccountId:
+    Type: String
+    Description: "AWS Account id"
+  AWSUserName:
+    Type: String
+    Description: "Servive user name"
 
 
 Resources:

@@ -1,5 +1,6 @@
 {
     "ERC_REPO_NAME": "processing-ecr-repo",
     "REGION": "us-east-1",
-    "DOCKER_CONTAINER_NAME":"processing-lambda"
+    "DOCKER_CONTAINER_NAME":"processing-lambda",
+    "AWS_SERVICE_USER":"app-dev"
 }
