@@ -3,7 +3,6 @@ Parameters:
   ECRRepositoryName:
     Type: String
     Description: "Name for the ECR repository"
-    Default: "processing-ecr-repo"
 
 
 Resources:

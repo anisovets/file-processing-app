@@ -42,6 +42,8 @@ jobs:
         with:
           name: lambda-deployment-stack
           template: cloudformation/ecr-repo-deploy-stack.yaml
+          parameter-overrides: >-
+            ECRRepositoryName=${{ steps.get-constants.outputs.erc-repo-name }}
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_NAMED_IAM
 
