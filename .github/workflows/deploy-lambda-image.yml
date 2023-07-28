@@ -20,10 +20,12 @@ jobs:
         run: |
           # Read the constants.json file and extract the value of 'REGION'
           aws_region=$(jq -r '.REGION' constants.json)
-          echo "The AWS region is: $aws_region"
+          erc_repo_name=$(jq -r '.ERC-REPO-NAME' constants.json)
+          docker_container_name=$(jq -r '.DOCKER-CONTAINER-NAME' constants.json)
           # Set the 'aws-region' variable for subsequent steps
-          # echo "::set-env name=aws-region::$aws_region"
           echo "aws-region=$aws_region" >> "$GITHUB_OUTPUT"
+          echo "erc-repo-name=$erc_repo_name" >> "$GITHUB_OUTPUT"
+          echo "docker-container-name=$docker_container_name" >> "$GITHUB_OUTPUT"
 
       - name: Configure AWS Credentials
         id: aws-deploy-credentials
