@@ -20,8 +20,8 @@ jobs:
         run: |
           # Read the constants.json file and extract the value of 'REGION'
           aws_region=$(jq -r '.REGION' constants.json)
-          erc_repo_name=$(jq -r '.ERC-REPO-NAME' constants.json)
-          docker_container_name=$(jq -r '.DOCKER-CONTAINER-NAME' constants.json)
+          erc_repo_name=$(jq -r '.ERC_REPO_NAME' constants.json)
+          docker_container_name=$(jq -r '.DOCKER_CONTAINER_NAME' constants.json)
           # Set the 'aws-region' variable for subsequent steps
           echo "aws-region=$aws_region" >> "$GITHUB_OUTPUT"
           echo "erc-repo-name=$erc_repo_name" >> "$GITHUB_OUTPUT"
