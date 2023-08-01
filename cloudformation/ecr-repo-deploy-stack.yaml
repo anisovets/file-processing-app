@@ -6,12 +6,12 @@ Parameters:
     Default: "processing-ecr-repo"
   AWSAccountId:
     Type: String
-    Default: "***"
+    Default: "955247798604"
     Description: "AWS Account id"
   AWSUserName:
     Type: String
     Description: "Servive user name"
-    Default: "***"
+    Default: "app-dev"
 
 Resources:
   MyECRRepository:
