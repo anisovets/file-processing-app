@@ -23,11 +23,14 @@ jobs:
           erc_repo_name=$(jq -r '.ERC_REPO_NAME' constants.json)
           docker_container_name=$(jq -r '.DOCKER_CONTAINER_NAME' constants.json)
           serv_user=$(jq -r '.AWS_SERVICE_USER' constants.json)
+          aws_account_id=$(aws sts get-caller-identity --query 'Account' --output text)
           # Set the 'aws-region' variable for subsequent steps
           echo "aws-region=$aws_region" >> "$GITHUB_OUTPUT"
           echo "erc-repo-name=$erc_repo_name" >> "$GITHUB_OUTPUT"
           echo "docker-container-name=$docker_container_name" >> "$GITHUB_OUTPUT"
           echo "aws-servusr-name=$serv_user" >> "$GITHUB_OUTPUT"
+          echo "aws-account-id=$aws_account_id" >> "$GITHUB_OUTPUT"
+
 
       - name: Configure AWS Credentials
         id: aws-deploy-credentials
@@ -45,7 +48,7 @@ jobs:
           name: lambda-deployment-stack
           template: cloudformation/ecr-repo-deploy-stack.yaml
           parameter-overrides: >-
-            AWSAccountId=${{ steps.get-constants.outputs.aws-region }}
+            AWSAccountId=${{ steps.get-constants.outputs.aws-account-id }}
             AWSUserName=${{ steps.get-constants.outputs.aws-servusr-name }}
             ECRRepositoryName=${{ steps.get-constants.outputs.erc-repo-name }}
           no-fail-on-empty-changeset: "1"
