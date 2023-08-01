@@ -6,8 +6,8 @@ Parameters:
     Default: "processing-ecr-repo"
   AWSAccountId:
     Type: String
-    Default: "955247798604"
     Description: "AWS Account id"
+    Default: "955247798604"    
   AWSUserName:
     Type: String
     Description: "Servive user name"
