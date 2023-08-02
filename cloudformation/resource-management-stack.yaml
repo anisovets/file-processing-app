@@ -63,6 +63,6 @@ Resources:
       FunctionName: my-lambda-function
       PackageType: Image
       Code:
-        ImageUri: !Sub "${AWS::AccountId}.dkr.ecr.us-east-1.amazonaws.com/processing-ecr-repo:latest"
+        ImageUri: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/processing-ecr-repo:latest"
       Role: !GetAtt MyLambdaExecutionRole.Arn
       Timeout: 60
