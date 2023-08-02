@@ -27,8 +27,8 @@ Resources:
               "Sid": "AllowPushPull",
               "Effect": "Allow",
               "Principal": {
-                  "AWS": [                    
-                    !Sub "arn:aws:iam::${AWSAccountId}:user/${AWSUserName}",
+                  "AWS": [           
+                    "arn:aws:iam::955247798604:user/app-dev",
                   ]
               },
               "Action": [
