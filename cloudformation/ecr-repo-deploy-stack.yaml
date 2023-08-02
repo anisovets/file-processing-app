@@ -28,7 +28,7 @@ Resources:
               "Effect": "Allow",
               "Principal": {
                   "AWS": [                    
-                    "arn:aws:iam::955247798604:user/app-dev",
+                    !Sub "arn:aws:iam::${AWSAccountId}:user/${AWSUserName}",
                   ]
               },
               "Action": [
