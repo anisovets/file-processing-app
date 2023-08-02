@@ -48,7 +48,7 @@ jobs:
           name: lambda-deployment-stack
           template: cloudformation/ecr-repo-deploy-stack.yaml
           parameter-overrides: >-
-            ßAWSAccountId=${{ steps.get-constants.outputs.aws-account-id }}
+            AWSAccountId=${{ steps.get-constants.outputs.aws-account-id }}
             AWSUserName=${{ steps.get-constants.outputs.aws-servusr-name }}
             ECRRepositoryName=${{ steps.get-constants.outputs.erc-repo-name }}
           no-fail-on-empty-changeset: "1"
