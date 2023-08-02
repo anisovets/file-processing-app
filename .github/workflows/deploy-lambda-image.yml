@@ -29,8 +29,6 @@ jobs:
           echo "erc-repo-name=$erc_repo_name" >> "$GITHUB_OUTPUT"
           echo "docker-container-name=$docker_container_name" >> "$GITHUB_OUTPUT"
           echo "aws-servusr-name=$serv_user" >> "$GITHUB_OUTPUT"
-          echo "aws-account-id=$aws_account_id" >> "$GITHUB_OUTPUT"
-
 
       - name: Configure AWS Credentials
         id: aws-deploy-credentials
