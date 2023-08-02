@@ -3,7 +3,11 @@ Parameters:
   ECRRepositoryName:
     Type: String
     Description: "Name for the ECR repository"
-    Default: "processing-ecr-repo"  
+    Default: "processing-ecr-repo"
+  AWSAccountId:
+    Type: String
+    Description: "AWS Account id"
+    Default: "955247798604"    
   AWSUserName:
     Type: String
     Description: "Servive user name"
