@@ -4,6 +4,10 @@ Parameters:
     Type: String
     Description: "Name for the ECR repository"
     Default: "processing-ecr-repo"
+  AWSAccountId:
+    Type: String
+    Description: "AWS Account id"
+    Default: "955247798604"    
   AWSUserName:
     Type: String
     Description: "Servive user name"
@@ -24,7 +28,7 @@ Resources:
               "Effect": "Allow",
               "Principal": {
                   "AWS": [           
-                    !Sub "arn:aws:iam::955247798604:user/${AWSUserName}"
+                    !Sub "arn:aws:iam::${AWS::AccountId}:user/${AWSUserName}"
                   ]
               },
               "Action": [
