@@ -12,18 +12,31 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ACTIONS_RUNNER_DEBUG: true
-      ECR-REPO-NAME: "processing-erc-repo"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Load constats from constants.json
+        id: get-constants
+        run: |
+          # Read the constants.json file and extract the value of 'REGION'
+          aws_region=$(jq -r '.REGION' constants.json)
+          erc_repo_name=$(jq -r '.ERC_REPO_NAME' constants.json)
+          docker_container_name=$(jq -r '.DOCKER_CONTAINER_NAME' constants.json)
+          serv_user=$(jq -r '.AWS_SERVICE_USER' constants.json)
+          aws_account_id=$(jq -r '.AWS_ACCOUNT_ID' constants.json)
+          # Set the 'aws-region' variable for subsequent steps
+          echo "aws-region=$aws_region" >> "$GITHUB_OUTPUT"
+          echo "erc-repo-name=$erc_repo_name" >> "$GITHUB_OUTPUT"
+          echo "docker-container-name=$docker_container_name" >> "$GITHUB_OUTPUT"
+          echo "aws-servusr-name=$serv_user" >> "$GITHUB_OUTPUT"
 
-      - name: Configure AWS Credentials 
+      - name: Configure AWS Credentials
         id: aws-deploy-credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
-          aws-region: us-east-1
+          aws-region: ${{ steps.get-constants.outputs.aws-region }}
 
      # Deploy to AWS CloudFormation ECR Stack 
       - name: Create ECR Entity
@@ -32,6 +45,10 @@ jobs:
         with:
           name: lambda-deployment-stack
           template: cloudformation/ecr-repo-deploy-stack.yaml
+          parameter-overrides: >-
+            AWSAccountId=${{ steps.get-constants.outputs.aws-account-id }}
+            AWSUserName=${{ steps.get-constants.outputs.aws-servusr-name }}
+            ECRRepositoryName=${{ steps.get-constants.outputs.erc-repo-name }}
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_NAMED_IAM
 
@@ -40,12 +57,12 @@ jobs:
         if: success()
         run: |
             echo Building the Docker image...
-            docker build -t processing-lambda:latest -f Dockerfile .
+            docker build -t ${{ steps.get-constants.outputs.docker-container-name }}:latest -f Dockerfile .
             AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-            docker tag processing-lambda:latest  $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/processing-ecr-repo:latest
+            docker tag ${{ steps.get-constants.outputs.docker-container-name }}:latest  $AWS_ACCOUNT_ID.dkr.ecr.${{ steps.get-constants.outputs.aws-region }}.amazonaws.com/${{ steps.get-constants.outputs.erc-repo-name }}:latest
             echo Build Tagged.....
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin  $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
-            docker push  $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/processing-ecr-repo
+            aws ecr get-login-password --region ${{ steps.get-constants.outputs.aws-region }} | docker login --username AWS --password-stdin  $AWS_ACCOUNT_ID.dkr.ecr.${{ steps.get-constants.outputs.aws-region }}.amazonaws.com
+            docker push  $AWS_ACCOUNT_ID.dkr.ecr.${{ steps.get-constants.outputs.aws-region }}.amazonaws.com/${{ steps.get-constants.outputs.erc-repo-name }}
       
     # Deploy to AWS CloudFormation Stack that allocates resources 
       - name: Allocate AWS Resources
@@ -55,5 +72,7 @@ jobs:
         with:
           name: resourcese-allocation-stack
           template: cloudformation/resource-management-stack.yaml
+          parameter-overrides: >-
+            ECRRepositoryName=${{ steps.get-constants.outputs.erc-repo-name }}
           no-fail-on-empty-changeset: "1"
           capabilities: CAPABILITY_NAMED_IAM

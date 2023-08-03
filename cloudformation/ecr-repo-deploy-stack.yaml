@@ -4,7 +4,14 @@ Parameters:
     Type: String
     Description: "Name for the ECR repository"
     Default: "processing-ecr-repo"
-
+  AWSAccountId:
+    Type: String
+    Description: "AWS Account id"
+    Default: "955247798604"    
+  AWSUserName:
+    Type: String
+    Description: "Servive user name"
+    Default: "app-dev"
 
 Resources:
   MyECRRepository:
@@ -20,8 +27,8 @@ Resources:
               "Sid": "AllowPushPull",
               "Effect": "Allow",
               "Principal": {
-                  "AWS": [
-                      "arn:aws:iam::955247798604:user/app-dev",
+                  "AWS": [           
+                    !Sub "arn:aws:iam::${AWS::AccountId}:user/${AWSUserName}"
                   ]
               },
               "Action": [
@@ -31,9 +38,8 @@ Resources:
                   "ecr:GetDownloadUrlForLayer",
                   "ecr:InitiateLayerUpload",
                   "ecr:PutImage",
-                  "ecr:UploadLayerPart"
+                  "ecr:UploadLayerPart",
+                  "ecr:GetRepositoryPolicy"
               ]
           }
         ]
-
-  
