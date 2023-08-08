@@ -21,3 +21,4 @@ jobs:
     - name: Delete CloudFormation Stack
       run: |
         aws cloudformation delete-stack --stack-name resourcese-allocation-stack
+        aws cloudformation delete-stack --stack-name lambda-deployment-stack
