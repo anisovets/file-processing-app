@@ -23,7 +23,8 @@ jobs:
         aws cloudformation delete-stack --stack-name resourcese-allocation-stack
     - name: Delete ECR Images 
       run: |
-        REPOSITORY_NAME=$(aws cloudformation describe-stacks --stack-name lambda-deployment-stack --query "Stacks[0].Outputs[?OutputKey=='processing-ecr-repo'].OutputValue" --output text)
+        # REPOSITORY_NAME=$(aws cloudformation describe-stacks --stack-name lambda-deployment-stack --query "Stacks[0].Outputs[?OutputKey=='processing-ecr-repo'].OutputValue" --output text)
+        REPOSITORY_NAME='processing-ecr-repo'
 
         # List all image digests
         DIGESTS=$(aws ecr list-images --repository-name $REPOSITORY_NAME --query 'imageIds[*].imageDigest' --output text)
