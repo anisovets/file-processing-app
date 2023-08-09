@@ -61,6 +61,7 @@ Resources:
                   - ec2:DescribeNetworkInterfaces
                   - ec2:DeleteNetworkInterface
                   - ecr:DescribeImages
+                  - ecr:BatchDeleteImage
                 Resource: "*"
   MyLambdaFunction:
     Type: AWS::Lambda::Function

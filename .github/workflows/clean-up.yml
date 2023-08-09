@@ -14,10 +14,25 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-1 # change this to your desired region
+        aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.ACCESS_KEY_SECRET }}
+        aws-region: us-east-1 # change this to your desired region
 
-    - name: Delete CloudFormation Stack
+    - name: Delete Resources Stack
       run: |
+        aws cloudformation delete-stack --stack-name resourcese-allocation-stack
+    - name: Delete ECR Images 
+      run: |
+        # REPOSITORY_NAME=$(aws cloudformation describe-stacks --stack-name lambda-deployment-stack --query "Stacks[0].Outputs[?OutputKey=='processing-ecr-repo'].OutputValue" --output text)
+        REPOSITORY_NAME='processing-ecr-repo'
+
+        # List all image digests
+        DIGESTS=$(aws ecr list-images --repository-name $REPOSITORY_NAME --query 'imageIds[*].imageDigest' --output text)
+
+        # Delete each image
+        for DIGEST in $DIGESTS; do
+            aws ecr batch-delete-image --repository-name $REPOSITORY_NAME --image-ids imageDigest=$DIGEST
+        done
+    - name: Delete ECR Stack 
+      run: | 
         aws cloudformation delete-stack --stack-name lambda-deployment-stack
