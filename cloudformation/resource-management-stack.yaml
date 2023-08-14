@@ -78,5 +78,5 @@ Resources:
       Action: 'lambda:InvokeFunction'
       Principal: s3.amazonaws.com
       FunctionName: !Ref MyLambdaFunction
-      SourceAccount: "${AWS::AccountId}"
+      SourceAccount: !Ref AWS::AccountId
       SourceArn: "arn:aws:s3:::image-landing-bucket"
