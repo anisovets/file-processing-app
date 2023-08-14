@@ -11,6 +11,11 @@ Resources:
     DeletionPolicy: Delete
     Properties:
       BucketName: "image-landing-bucket"
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: 's3:ObjectCreated:*'
+            Function: !GetAtt MyLambdaFunction.Arn
+
   MySQSQueue:
     Type: "AWS::SQS::Queue"
     UpdateReplacePolicy: Retain
@@ -81,11 +86,3 @@ Resources:
       FunctionName: !Ref MyLambdaFunction
       SourceAccount: !Ref AWS::AccountId
       SourceArn: "arn:aws:s3:::image-landing-bucket"
-  S3BucketNotification:
-    Type: AWS::S3::BucketNotificationConfiguration
-    Properties:
-      Bucket: !Ref MyS3Bucket
-      NotificationConfiguration:
-        LambdaConfigurations:
-          - Event: 's3:ObjectCreated:*'
-            Function: !GetAtt MyLambdaFunction.Arn
