@@ -22,4 +22,4 @@ def file_upload_handler(event, context):
 
 
     
-    return "File processing handler!"+os.environ['AWS_LAMBDA_LOG_GROUP_NAME']
+    return "File processing handler! 256 "+os.environ['AWS_LAMBDA_LOG_GROUP_NAME']
